@@ -79,10 +79,8 @@ namespace AnalyzerProxy.Controllers
                     SearchList = new List<SearchList>()
                 };
 
-                var path = this._configuration["KeysAnalyzer:ListJsonFile"];
-
                 //Load tipification file
-                var jsonFilter = System.IO.File.ReadAllText(path);
+                var jsonFilter = this._configuration["KeysAnalyzer:ListJsonFile"];
 
 
                 //json to obj
