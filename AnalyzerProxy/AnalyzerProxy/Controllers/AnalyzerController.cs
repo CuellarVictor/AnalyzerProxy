@@ -27,6 +27,7 @@ namespace AnalyzerProxy.Controllers
             {
                 var urlRequest = this._configuration["KeysAnalyzer:UrlAnalyzer"];
                 var token = this._configuration["KeysAnalyzer:Token"];
+                var timeout = this._configuration["KeysAnalyzer:TimeOut"];
 
 
                 #region Generate Request
@@ -38,6 +39,7 @@ namespace AnalyzerProxy.Controllers
                 request.Method = "GET";
                 request.ContentType = "application/json";
                 request.Headers.Add("Authorization", token);
+                request.Timeout = Convert.ToInt32(timeout);
 
                 var response = (HttpWebResponse)request.GetResponse();
                 var result = new ResponseHttpResult();
@@ -87,26 +89,54 @@ namespace AnalyzerProxy.Controllers
                 List<GroupFilter> listFiltered = Newtonsoft.Json.JsonConvert.DeserializeObject<List<GroupFilter>>(jsonFilter);
                 GroupFilter listSelected;
 
-                group.SearchList?.All(x =>
+
+
+                listFiltered.Where(x => !x.internacional)?.All(x =>
                 {
 
-                    listSelected = listFiltered.Where(l => l.nombre.Contains(x.ListName)).FirstOrDefault();
+                    var list = group.SearchList.Where(s => s.ListName.Contains(x.nombre)).FirstOrDefault();
 
-                    if (listSelected != null)
+                    if (list != null)
                     {
-                        if (listSelected.internacional)
-                        {
-                            internationalList.SearchList.Add(x);
-                        }
-                        else
-                        {
-                            nationalList.SearchList.Add(x);
-                        }
+                        nationalList.SearchList.Add(list);
                     }
-                    
-
                     return true;
                 });
+
+                listFiltered.Where(x => x.internacional)?.All(x =>
+                {
+
+                    var list = group.SearchList.Where(s => s.ListName.Contains(x.nombre)).FirstOrDefault();
+
+                    if (list != null)
+                    {
+                        internationalList.SearchList.Add(list);
+                    }
+                    return true;
+                });
+
+
+
+                //group.SearchList?.All(x =>
+                //{
+
+                //    listSelected = listFiltered.Where(l => l.nombre.Contains(x.ListName)).FirstOrDefault();
+
+                //    if (listSelected != null)
+                //    {
+                //        if (listSelected.internacional)
+                //        {
+                //            internationalList.SearchList.Add(x);
+                //        }
+                //        else
+                //        {
+                //            nationalList.SearchList.Add(x);
+                //        }
+                //    }
+                    
+
+                //    return true;
+                //});
 
                 oResultFilter.Add(nationalList);
                 oResultFilter.Add(internationalList);

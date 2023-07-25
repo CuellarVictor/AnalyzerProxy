@@ -24,6 +24,21 @@
         public string? SearchValue { get; set; }
         public string? UserCreator { get; set; }
         public DateTime CreateDate { get; set; }
+
+        public List<Actuacion> actuaciones { get; set; }
+    }
+
+    public class Actuacion
+    {
+        public Actuacion()
+        {
+
+        }
+
+        public string fecha { get; set; }
+        public string tipoActuacion { get; set; }
+        public string cuaderno { get; set; }
+        public string folio { get; set; }
     }
 
     public class SearchList
